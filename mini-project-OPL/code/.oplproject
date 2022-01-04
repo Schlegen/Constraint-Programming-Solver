@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ASCII"?><project>
+	<version>1.0</version>
+	<configs>
+		<config default="true" name="Configuration 1" category="opl">
+			<ref name="mini-projet-1.mod" type="model">
+			</ref>
+			<ref name="mini-projet-1.dat" type="data">
+			</ref>
+		</config>
+		<config default="false" name="Config2 - 10 sol avec main" category="opl">
+			<ref name="mini-projet-1.2.mod" type="model">
+			</ref>
+			<ref name="mini-projet-1.dat" type="data">
+			</ref>
+		</config>
+		<config default="false" name="Config3 - Branch and B" category="opl">
+			<ref name="mini-projet-1.3.mod" type="model">
+			</ref>
+			<ref name="mini-projet-1.dat" type="data">
+			</ref>
+		</config>
+	</configs>
+	
+</project>
