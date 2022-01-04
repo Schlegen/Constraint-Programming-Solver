@@ -1,0 +1,13 @@
+positions = [[0 0 0 0 1 0 0 0 0 0 0 0]
+             [0 0 0 0 0 0 0 0 0 0 0 0]
+             [0 0 0 0 0 0 0 0 0 1 1 0]
+             [0 0 0 1 1 0 1 0 0 1 0 0]
+             [0 0 0 0 0 0 0 0 0 0 0 0]
+             [1 0 0 1 0 1 1 0 0 0 0 0]
+             [0 0 0 0 0 0 1 0 0 1 0 0]
+             [0 0 0 0 0 0 0 0 0 0 1 0]
+             [0 0 0 0 0 0 0 0 0 0 0 0]
+             [0 0 0 0 1 0 0 0 0 0 1 1]
+             [0 0 0 1 1 0 0 0 0 0 0 0]
+
+# remarque : il ne faut pas considérer les cases sur la couronne de largeur 2 entourant la grille
