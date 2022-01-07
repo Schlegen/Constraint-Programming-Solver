@@ -6,11 +6,12 @@
 using CP;
 
 // Definition des données du problèmes
-int n = 8;
-int M = (n + 4) * (n + 4);
+int n = 7;
+//int M = (n + 4) * (n + 4);
 
-range length = 0..n-1;
-range length_extended = 0..n+3;
+range extended_grid = 0..n+3;
+range inner_grid = 2..n+1;
+{int} edges = {0, 1, n+2, n+3};
 
 
 
@@ -22,32 +23,28 @@ tuple motions {
 {motions} motions_x_y = ...;
 
 
-dvar boolean positions[length_extended][length_extended];
-dvar int grid[length_extended][length_extended];
+dvar boolean positions[extended_grid][extended_grid];
+//dvar int grid[length_extended][length_extended] in 0..M;
 
 // Objectif
-minimize sum(x in length, y in length) positions[x + 2][y + 2] + sum(x in length, y in length) 0.00001*grid[x + 2][y + 2];
+minimize sum(x in inner_grid, y in inner_grid) positions[x][y];
+// sum(x in length, y in length) 0.00001*grid[x + 2][y + 2];
 
 // Contraintes
 constraints {
  	// Contraintes de 
- 	forall (x in length, y in length){
- 	  forall (k in motions_x_y){
- 	  	grid[x + 2 + k.x][y + 2 + k.y] >= positions[x + 2][y + 2];
+ 	forall (x in inner_grid, y in inner_grid){
+ 	  sum(k in motions_x_y) positions[x + k.x][y + k.y] >= 1;
+ 	  //forall (k in motions_x_y){
+ 	  	//grid[x + 2 + k.x][y + 2 + k.y] >= positions[x + 2][y + 2];
+ 	  //}
+ 	  //grid[x + 2][y + 2] <= M * sum(k in motions_x_y) positions[x + 2 + k.x][y + 2 + k.y];
+ 	  //grid[x + 2][y + 2] >= 1;
+ 	}
+ 	forall(x in edges){
+ 	  forall(y in extended_grid){
+ 	  	positions[x][y] == 0;
+ 	  	positions[y][x] == 0;
  	  }
- 	  grid[x + 2][y + 2] <= M * sum(k in motions_x_y) positions[x + 2 + k.x][y + 2 + k.y];
- 	  grid[x + 2][y + 2] >= 1;
- 	}
- 	forall(x in 1..2, y in length){
- 	  positions[x][y] == 0;
- 	}
- 	forall(x in n-1..n, y in length){
- 	  positions[x][y] == 0;
- 	}
- 	forall(y in 1..2, x in length){
- 	  positions[x][y] == 0;
- 	}
- 	forall(y in n-1..n, x in length){
- 	  positions[x][y] == 0;
- 	}
+	} 
 }
