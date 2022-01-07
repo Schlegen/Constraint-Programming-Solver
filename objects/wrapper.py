@@ -32,9 +32,16 @@ def queens_columns_constraint(variables, domains, a=1, b=-1):
 
 # ax + by = c
 def weighted_sum_constraint(variables, domains, a, b, c):
+    # Useless
     constraints = None
     return constraints
 
+
+def cartography_constraints(graph):
+    constraints = list()
+    # TODO
+    # ...
+    return constraints
 
 
 
