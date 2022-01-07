@@ -23,3 +23,14 @@ class Domain:
             ub (int) : upper bound
         """
         self.dict[variable] = [x for x in range(lb, ub + 1)]
+
+    def fill_all_domains_by_range(self, lb, ub):
+        """
+        Build a linear domain for all variables, from lower bound lb to upper bound ub.
+
+        Args:
+            lb (int) : lower bound
+            ub (int) : upper bound
+        """
+        for variable in self.variables:
+            self.dict[variable] = [x for x in range(lb, ub + 1)]
