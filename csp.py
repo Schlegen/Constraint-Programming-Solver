@@ -1,5 +1,5 @@
 from utils.csp_errors import DomainError, UnknownVariable
-
+from copy import deepcopy
 
 class CSP:
     def __init__(self, variables, domains, constraints):
@@ -38,8 +38,10 @@ class CSP:
         Backtracking algorithm
 
         Args:
-            instantiation (dict[Variable, int]): partial instantiation of the CSP
+            instantiat (dict[Variable, int]): partial instantiation of the CSP
         """
+
+        # pb : sans deepcopy ca fou la merde. avec, ca ne reconnait plus les variables
 
         # If the instantiation does not fit a constraint
         for variable in instantiation:
@@ -56,21 +58,19 @@ class CSP:
         values = self.heuristic_values_choice_1(var)
 
         for v in values:  # for all values in the domain of var
+            print(var.name)
+            print(len(instantiation))
             instantiation[var] = v
             if self.backtracking(instantiation):
                 return True
-
         return False
 
     # Heuristic for variable choice
     def heuristic_variable_choice_1(self, instantiation):
         """ Naive approach : take the first possible variable in the list"""
-        index_var = 0
         for i in range(len(self.variables)):
             if self.variables[i] not in instantiation:
-                index_var = i
-                break
-        return self.variables[index_var]
+                return self.variables[i]
 
     # Heuristic for values choice
     def heuristic_values_choice_1(self, variable):
@@ -135,3 +135,14 @@ class CSP:
 # partir d'instantiation partielle vide = résoudre le pb de décision ?? OUI : et ajouter à "retourner VRAI" la valeur de i pour construire une solution
 
 # question : AC pas symetrique non ? on prend chaque x et regarde si les valeurs sont supportes mais jamais si les y le sont ?
+
+# ensuite comment savoir quand utiliser AC et le forward checking ?
+#et comment choisir les heuristiques de selection en fonction du pb ??  --> en faire plusieurs, meme si elles sont simples. Idee d'aprofondissement : faire un truc intelligent qui choisit une en fonction du pb ou qqch comme ca
+
+
+# AC3 en init (à la racine)
+# puis a chaque noeud de l'arbre de recherche on fait quoi ? --> faire du forwardchecking (autre plan serait de faire du maintient d'AC : MAC)
+
+#colorabilite = pb de decision : on dit le nbre de couleurs et ça repond oui ou non
+
+# nqueens : 5 ca marche

@@ -13,7 +13,7 @@ for variable in variables:
 
 # Init constraints
 tuples = [(1, 2), (2, 3), (1, 3)]  # x1 < x2
-tuples_2 = [(1, 1), (2, 2), (3, 3)]  # x2 = x3
+tuples_2 = [(1, 1), (2, 2), (3, 3), (3, 1)]  # x2 = x3
 tuples_3 = [(2, 1), (3, 2), (3, 1)]  # x1 > x3
 
 constraints = [Constraint(variables[0], variables[1], tuples),
