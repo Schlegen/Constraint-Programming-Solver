@@ -1,7 +1,7 @@
 class Domain:
     def __init__(self, variables):
         self.variables = variables
-        self.dict = {variable: [] for variable in variables}
+        self.dict = {variable.name: [] for variable in variables}
 
     def fill_domain_with_values(self, variable, values):
         """
@@ -11,7 +11,7 @@ class Domain:
             variable (Variable)
             values (list of int) : possible values for variable
         """
-        self.dict[variable] = values
+        self.dict[variable.name] = values
 
     def fill_domain_by_range(self, variable, lb, ub):
         """
@@ -22,7 +22,7 @@ class Domain:
             lb (int) : lower bound
             ub (int) : upper bound
         """
-        self.dict[variable] = [x for x in range(lb, ub + 1)]
+        self.dict[variable.name] = [x for x in range(lb, ub + 1)]
 
     def fill_all_domains_by_range(self, lb, ub):
         """
@@ -33,4 +33,4 @@ class Domain:
             ub (int) : upper bound
         """
         for variable in self.variables:
-            self.dict[variable] = [x for x in range(lb, ub + 1)]
+            self.dict[variable.name] = [x for x in range(lb, ub + 1)]

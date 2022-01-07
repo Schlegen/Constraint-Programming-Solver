@@ -9,7 +9,7 @@ class Queens(CSP):
     def __init__(self, nb_columns):
         # Variables
         variables = list()
-        for i in range(0, nb_columns + 1):
+        for i in range(1, nb_columns + 1):
             variables.append(Variable("x" + str(i)))
 
         # Domains
@@ -24,9 +24,10 @@ class Queens(CSP):
         super().__init__(variables=variables, domains=domains, constraints=constraints)
 
 
-nb_columns = 8
-queens = Queens(nb_columns=nb_columns)
-print(f"Solving n Queens with n = {nb_columns} ...")
+nb_queens = 8
+queens = Queens(nb_columns=nb_queens)
+print(f"Solving n Queens with n = {nb_queens} ...")
+# print(f"\nDomains {queens.domains}")
 var = list(queens.constraints.keys())[1]
 
 verbose = False

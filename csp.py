@@ -1,5 +1,6 @@
 from utils.csp_errors import DomainError, UnknownVariable
-from copy import deepcopy
+from copy import copy
+
 
 class CSP:
     def __init__(self, variables, domains, constraints):
@@ -13,22 +14,22 @@ class CSP:
         self.constraints_list = constraints
         self.domains = domains.dict  # domain of each variable : dict[Variable, Domain]
         for variable in self.variables:
-            self.constraints[variable] = []
-            if variable not in self.domains.keys():
+            self.constraints[variable.name] = []
+            if variable.name not in self.domains.keys():
                 raise DomainError(variable)
 
         for constraint in constraints:
             for variable in constraint.variables:
-                if variable not in self.variables:
+                if variable not in self.variables:  #changer pour des var.name ?
                     raise UnknownVariable(variable)
                 else:
-                    self.constraints[variable].append(constraint)
+                    self.constraints[variable.name].append(constraint)
 
-    def is_consistent(self, variable, instantiation):
+    def is_consistent(self, variable_name, instantiation):
         """
             For a given variable and instantiation, tell if the variable is consistent
         """
-        for constraint in self.constraints[variable]:
+        for constraint in self.constraints[variable_name]:
             if not constraint.is_satisfied(instantiation):
                 return False
         return True
@@ -38,30 +39,33 @@ class CSP:
         Backtracking algorithm
 
         Args:
-            instantiat (dict[Variable, int]): partial instantiation of the CSP
+            instantiation (dict[Variable, int]): partial instantiation of the CSP
         """
 
         # pb : sans deepcopy ca fou la merde. avec, ca ne reconnait plus les variables
 
         # If the instantiation does not fit a constraint
-        for variable in instantiation:
-            if not self.is_consistent(variable, instantiation):
+        for variable_name in instantiation:
+            if not self.is_consistent(variable_name, instantiation):
                 return False
 
         # If the instantiation is full
         if len(instantiation) == len(self.variables):
+            print("\nSolution :")
+            print(instantiation)
             return True
 
         # We pick a non-instantiated variable
-        var = self.heuristic_variable_choice_1(instantiation)
+        var_name = self.heuristic_variable_choice_1(instantiation)
         # We extract its possible values
-        values = self.heuristic_values_choice_1(var)
+        values = self.heuristic_values_choice_1(var_name)
+
+        # print(f"variable {var_name} with instantiation {instantiation}")
 
         for v in values:  # for all values in the domain of var
-            print(var.name)
-            print(len(instantiation))
-            instantiation[var] = v
-            if self.backtracking(instantiation):
+            local_instantiation = instantiation.copy()
+            local_instantiation[var_name] = v
+            if self.backtracking(local_instantiation):
                 return True
         return False
 
@@ -69,13 +73,13 @@ class CSP:
     def heuristic_variable_choice_1(self, instantiation):
         """ Naive approach : take the first possible variable in the list"""
         for i in range(len(self.variables)):
-            if self.variables[i] not in instantiation:
-                return self.variables[i]
+            if self.variables[i].name not in instantiation:
+                return self.variables[i].name
 
     # Heuristic for values choice
-    def heuristic_values_choice_1(self, variable):
+    def heuristic_values_choice_1(self, variable_name):
         """ Naive approach : take the domain in its defaults order"""
-        return self.domains[variable]
+        return self.domains[variable_name]
 
     # consistence algorithm
     def ac3(self):
@@ -89,28 +93,28 @@ class CSP:
             to_test += [var]
         while len(to_test) > 0:
             (x, y) = to_test.pop()
-            instantiation = {x: 0,
-                             y: 0}
-            for x_value in self.domains[x]:
+            instantiation = {x.name: 0,
+                             y.name: 0}
+            for x_value in self.domains[x.name]:
                 # until line 100 : check if x_value has a support
-                instantiation[x] = x_value
+                instantiation[x.name] = x_value
                 is_supported = False
-                for y_value in self.domains[y]:
+                for y_value in self.domains[y.name]:
                     # print(f"{x.name} : {x_value} ; {y.name} : {y_value}")
-                    instantiation[y] = y_value
+                    instantiation[y.name] = y_value
                     # if x_value is supported by at least 1 value of y, then it's ok
-                    if self.is_consistent(y, instantiation):
+                    if self.is_consistent(y.name, instantiation):
                         is_supported = True
                 if not is_supported:
                     print("- value " + str(x_value) + " not supported for var " + str(x.name))
-                    self.domains[x].remove(x_value)
-                    for constraint in self.constraints[x]:
+                    self.domains[x.name].remove(x_value)
+                    for constraint in self.constraints[x.name]:
                         # if constraint.variables not in [[x, y], [y, x]]:
                         for z in constraint.variables:
-                            if z != x:
+                            if z.name != x.name:
                                 to_test += [(z, x)]
 
-    def forward_checking(self, instantiation, x, a):
+    def forward_checking(self, instantiation, x, a):  # change with .name
         for constraint in self.constraints[x]:
             y = None
             for variable in constraint.variables:
@@ -146,3 +150,5 @@ class CSP:
 #colorabilite = pb de decision : on dit le nbre de couleurs et ça repond oui ou non
 
 # nqueens : 5 ca marche
+
+# TODO : changer les dict[VAR] : ... en dict[var name] : ...

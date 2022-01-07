@@ -16,8 +16,8 @@ class Constraint:
             is_sat (bool) : True if the given instantiation satisfies the constraint
 
         """
-        if self.variables[0] in instantiation and self.variables[1] in instantiation:
-            v1, v2 = instantiation[self.variables[0]], instantiation[self.variables[1]]
+        if self.variables[0].name in instantiation and self.variables[1].name in instantiation:
+            v1, v2 = instantiation[self.variables[0].name], instantiation[self.variables[1].name]
             is_sat = (v1, v2) in self.tuples
             return is_sat
         return True
