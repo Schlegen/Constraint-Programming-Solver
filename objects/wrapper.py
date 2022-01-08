@@ -37,13 +37,11 @@ def weighted_sum_constraint(variables, domains, a, b, c):
     return constraints
 
 
-def cartography_constraints(graph):
+def cartography_constraints(variables, domains, edges):
     constraints = list()
-    # TODO
-    # ...
+    for edge in edges:
+        i, j = edge  # index of the 2 nodes of the edge
+        constraints += alldiff_constraint([variables[i - 1], variables[j - 1]],
+                                          domains)  # -1 because list first index is 0 (not 1)
     return constraints
-
-
-
-
 
