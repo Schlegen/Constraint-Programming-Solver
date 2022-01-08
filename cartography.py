@@ -32,3 +32,4 @@ print(f"Solving Cartography Problem with n = {colors} colors and instance {file.
 
 solution = cartography.main(instantiation=dict())
 print(f"\nThere is a solution : {solution}")
+print(cartography.final_solution)

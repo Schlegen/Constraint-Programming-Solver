@@ -9,6 +9,7 @@ class CSP:
             variables (list[Variable])
             domains (Domain)
         """
+        self.final_solution = None
         self.variables = variables
         self.constraints = {}
         self.constraints_list = constraints
@@ -20,7 +21,7 @@ class CSP:
 
         for constraint in constraints:
             for variable in constraint.variables:
-                if variable not in self.variables:  #changer pour des var.name ?
+                if variable not in self.variables:  # changer pour des var.name ?
                     raise UnknownVariable(variable)
                 else:
                     self.constraints[variable.name].append(constraint)
@@ -42,8 +43,6 @@ class CSP:
             instantiation (dict[Variable, int]): partial instantiation of the CSP
         """
 
-        # pb : sans deepcopy ca fou la merde. avec, ca ne reconnait plus les variables
-
         # If the instantiation does not fit a constraint
         for variable_name in instantiation:
             if not self.is_consistent(variable_name, instantiation):
@@ -51,8 +50,7 @@ class CSP:
 
         # If the instantiation is full
         if len(instantiation) == len(self.variables):
-            print("\nSolution :")
-            print(instantiation)
+            self.final_solution = instantiation
             return True
 
         # We pick a non-instantiated variable
@@ -86,10 +84,9 @@ class CSP:
         print("\nAC results :")
         to_test = list()
         for constraint in self.constraints_list:
-            # for constraint in self.constraints[variable]:
             var = constraint.variables
             to_test += [var]
-            var.reverse()  # Tres important !! cf remarque : contrainte directionnelle dans slides cours 2 :
+            var.reverse()  # Tres important !! cf remarque : contrainte directionnelle dans slides cours 2
             to_test += [var]
         while len(to_test) > 0:
             (x, y) = to_test.pop()
@@ -109,7 +106,6 @@ class CSP:
                     print("- value " + str(x_value) + " not supported for var " + str(x.name))
                     self.domains[x.name].remove(x_value)
                     for constraint in self.constraints[x.name]:
-                        # if constraint.variables not in [[x, y], [y, x]]:
                         for z in constraint.variables:
                             if z.name != x.name:
                                 to_test += [(z, x)]
@@ -129,26 +125,20 @@ class CSP:
     def main(self, instantiation, with_arc_consistency=True, with_forward_checking=False):
         if with_arc_consistency:
             self.ac3()
-        # a ce stade, si un domaine est vide, alors il n'y a pas de solution
-        # on peut dailleurs modif ac3 pour qu'il sarrete des qu'un domaine est vide
+        # a ce stade, si un des domaines est vide, alors il n'y a pas de solution (logique)
+        # idee : on peut dailleurs modif ac3 pour qu'il sarrete des qu'un domaine est vide
         return self.backtracking(instantiation)
 
 
-# TODO
-# Comment parcourir l'arbre ? Là le backtrack c'est bien quand on a une instantiation mais comment en générer ? D'où partir ?
-# partir d'instantiation partielle vide = résoudre le pb de décision ?? OUI : et ajouter à "retourner VRAI" la valeur de i pour construire une solution
 
-# question : AC pas symetrique non ? on prend chaque x et regarde si les valeurs sont supportes mais jamais si les y le sont ?
+# IDEES :
 
-# ensuite comment savoir quand utiliser AC et le forward checking ?
-#et comment choisir les heuristiques de selection en fonction du pb ??  --> en faire plusieurs, meme si elles sont simples. Idee d'aprofondissement : faire un truc intelligent qui choisit une en fonction du pb ou qqch comme ca
+# Comment choisir les heuristiques de selection en fonction du pb ??
+# ==> en faire plusieurs, meme si elles sont simples.
+# Idee d'aprofondissement : faire un truc intelligent qui choisit une en fonction du pb ou qqch comme ca
 
 
 # AC3 en init (à la racine)
 # puis a chaque noeud de l'arbre de recherche on fait quoi ? --> faire du forwardchecking (autre plan serait de faire du maintient d'AC : MAC)
 
 #colorabilite = pb de decision : on dit le nbre de couleurs et ça repond oui ou non
-
-# nqueens : 5 ca marche
-
-# TODO : changer les dict[VAR] : ... en dict[var name] : ...
