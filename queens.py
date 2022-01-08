@@ -1,4 +1,3 @@
-from objects.constraint import Constraint
 from objects.variable import Variable
 from objects.domain import Domain
 from objects.wrapper import alldiff_constraint, queens_columns_constraint
@@ -8,9 +7,7 @@ from csp import CSP
 class Queens(CSP):
     def __init__(self, nb_columns):
         # Variables
-        variables = list()
-        for i in range(1, nb_columns + 1):
-            variables.append(Variable("x" + str(i)))
+        variables = [Variable("x" + str(i)) for i in range(1, nb_columns + 1)]
 
         # Domains
         domains = Domain(variables)
@@ -28,14 +25,6 @@ nb_queens = 8
 queens = Queens(nb_columns=nb_queens)
 print(f"Solving n Queens with n = {nb_queens} ...")
 # print(f"\nDomains {queens.domains}")
-var = list(queens.constraints.keys())[1]
 
-verbose = False
-if verbose:
-    for constraint in queens.constraints[var]:
-        print("variables " + str(constraint.variables[0].name) + " ; " + str(constraint.variables[1].name))
-        print(constraint.tuples)
-
-instantiation = dict()
-solution = queens.main(instantiation)
+solution = queens.main(instantiation=dict())
 print(f"\nThere is a solution : {solution}")
