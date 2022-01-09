@@ -230,10 +230,11 @@ class CSP:
              forward_check=False, arc_consistence=True):
         if arc_consistence:
             self.ac3()
-            print("--")
-            # a ce stade, si un des domaines est vide, alors il n'y a pas de solution (logique)
-            # idee : on peut dailleurs modif ac3 pour qu'il sarrete des qu'un domaine est vide
-        #print([(e.variables[0].name, e.variables[1].name) for e in self.constraints["x1,3"]]) 
+            for var in self.domains:
+                if not self.domains[var]:
+                    return False, True, 0, 0
+            print("END OF AC3")
+
         args_var_selection = ()
         if mode_var_heuristic == 3:
             list_var_sorted_by_nconstraints = self.compute_list_heuristic_var_3()
