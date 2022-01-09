@@ -237,7 +237,7 @@ class CSP:
         args_var_selection = ()
         if mode_var_heuristic == 3:
             list_var_sorted_by_nconstraints = self.compute_list_heuristic_var_3()
-            print("A", list_var_sorted_by_nconstraints)
+            # print("A", list_var_sorted_by_nconstraints)
             args_var_selection = (list_var_sorted_by_nconstraints,)
 
         return self.backtracking(instantiation, self.domains, mode_var_heuristic=mode_var_heuristic, args_var_selection=args_var_selection, mode_val_heuristic=mode_val_heuristic, starting_time=time.time(), time_limit=time_limit, forward_check=forward_check)
