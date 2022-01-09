@@ -34,60 +34,90 @@ class Sudoku(CSP):
             domains.dict["x" + str(i) + "," + str(j)] = [value]
 
         # Constraints
-        constraints = list()
-        constraints += sudoku_constraints(variables, domains.dict)
+        constraints = sudoku_constraints(variables, domains.dict)
 
         super().__init__(variables=variables, domains=domains, constraints=constraints)
 
     def show_solution(self):
         if solution is None:
             return 0
-        n = len(self.variables)
+        n = 9
         grid = np.zeros((n, n))
         for var in self.final_solution.keys():
-            column = int(var.split("x")[1]) - 1
-            row = self.final_solution[var] - 1
-            grid[row][column] = 1
+            coordo = var.split("x")[1].split(",")
+            i, j = int(coordo[0]) - 1, int(coordo[1]) - 1
+            grid[i][j] = self.final_solution[var]
 
-        plt.figure(f"n Queens solution with n = {n}")
-        plt.imshow(grid, cmap='Greys')
+        plt.figure(f"Sudoku solution :")
+        plt.imshow(grid, cmap='Pastel1')
         # fig.axes.get_xaxis().set_visible(False)
         # fig.axes.get_yaxis().set_visible(False)
 
         ax = plt.gca()
 
         # Major ticks
-        ax.set_xticks(np.arange(0, n, 1))
-        ax.set_yticks(np.arange(0, n, 1))
+        ax.set_xticks(np.arange(0, n, 3))
+        ax.set_yticks(np.arange(0, n, 3))
 
         # Minor ticks
-        ax.set_xticks(np.arange(-.5, n, 1), minor=True)
-        ax.set_yticks(np.arange(-.5, n, 1), minor=True)
+        ax.set_xticks(np.arange(-.5, n, 3), minor=True)
+        ax.set_yticks(np.arange(-.5, n, 3), minor=True)
 
         # Gridlines based on minor ticks
         ax.grid(which='minor', color='black', linestyle='-', linewidth=2)
 
+        plt.colorbar()
+        plt.show()
+
+    def show_pre_assigned(self):
+        n = 9
+        grid = np.zeros((n, n))
+        for var in self.pre_assigned.keys():
+            i, j = var
+            grid[i - 1][j - 1] = self.pre_assigned[var]
+
+        plt.figure(f"Sudoku solution :")
+        plt.imshow(grid, cmap='Pastel1')
+        # fig.axes.get_xaxis().set_visible(False)
+        # fig.axes.get_yaxis().set_visible(False)
+
+        ax = plt.gca()
+
+        # Major ticks
+        ax.set_xticks(np.arange(0, n, 3))
+        ax.set_yticks(np.arange(0, n, 3))
+
+        # Minor ticks
+        ax.set_xticks(np.arange(-.5, n, 3), minor=True)
+        ax.set_yticks(np.arange(-.5, n, 3), minor=True)
+
+        # Gridlines based on minor ticks
+        ax.grid(which='minor', color='black', linestyle='-', linewidth=2)
+
+        plt.colorbar()
         plt.show()
 
 
 if __name__ == "__main__":
-    file = "instances/sudoku_1.txt"
+    file = "instances/sudoku_2.txt"
     sudoku = Sudoku(file_name=file)
-    var = list(sudoku.constraints.keys())[0]
+    var = list(sudoku.constraints.keys())[13]
+
     print(var)
-    print(sudoku.constraints)
     cons = sudoku.constraints[var]
+    # print([([var.name for var in c.variables], c.tuples) for c in cons])
+    print([([var.name for var in c.variables]) for c in cons])
 
-    print([[var.name for var in c.variables] for c in cons])
+    sudoku.show_pre_assigned()
 
-    print(f"Solving Sudoku with instance = {file} ...")
-    # print(f"\nDomains {sudoku.domains}")
+    print(f"\nSolving Sudoku with instance = {file} ...")
+    print(f"\nDomains {sudoku.domains['x1,1']}")
 
     solution = sudoku.main(instantiation=dict())
     print(f"\nThere is a solution : {solution}")
     if solution:
         print(f"Solution : {sudoku.final_solution}")
-        # sudoku.show_solution()
+        sudoku.show_solution()
 
 
   	# // Toutes les variables d'un sous-tableau sont differentes

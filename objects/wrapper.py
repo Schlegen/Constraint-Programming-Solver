@@ -93,14 +93,14 @@ def sudoku_constraints(variables, domains):
 
         constraints += alldiff_constraint(row, domains)
         constraints += alldiff_constraint(column, domains)
-    #
-    # for block in blocks:
-    #     cells = list()
-    #     for cell in block:
-    #         i, j = cell  # coordinates of the cell
-    #         index = 9 * i + j
-    #         cells.append(variables[index])
-    #     constraints += alldiff_constraint(cells, domains)
+
+    for block in blocks:
+        cells = list()
+        for cell in block:
+            i, j = cell  # coordinates of the cell
+            index = 9 * i + j
+            cells.append(variables[index])
+        constraints += alldiff_constraint(cells, domains)
 
     return constraints
 
@@ -114,6 +114,7 @@ def sudoku_blocks():
             for u in range(3):
                 for v in range(3):
                     block.append((si + u, sj + v))
+            blocks.append(block)
     return blocks
 
 
