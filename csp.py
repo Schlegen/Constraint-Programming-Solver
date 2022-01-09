@@ -38,7 +38,7 @@ class CSP:
                 return False
         return True
 
-    def backtracking(self, instantiation, domains, mode_var_heuristic=1, args_var_selection=()):
+    def backtracking(self, instantiation, domains, mode_var_heuristic=1, args_var_selection=(), mode_val_selector=1):
         """
         Backtracking algorithm
 
@@ -47,7 +47,6 @@ class CSP:
         """
         for variable_name in instantiation:
             if not self.is_consistent(variable_name, instantiation):
-                #print("instanciation")
                 return False
 
         # If the instantiation is full
@@ -64,7 +63,9 @@ class CSP:
             return False
 
 
-        values = self.heuristic_values_choice_1(var_name, domains)
+        # values = self.heuristic_values_choice_1(var_name, domains)
+
+        values = self.heuristic_values_selector(mode_val_selector, instantiation, domains, var_name)
 
         # print(f"variable {var_name} with instantiation {instantiation}")
 
@@ -73,7 +74,6 @@ class CSP:
             local_instantiation[var_name] = v
             #Forward checking
             local_domains = self.forward_checking(instantiation, domains, var_name, v)
-            print("A", var_name, local_domains)
 
             if self.backtracking(local_instantiation, local_domains, mode_var_heuristic, args_var_selection):
                 return True
@@ -96,7 +96,6 @@ class CSP:
         """ Third approach : take the variable involved in the highest number of constraints"""
         #TODO: coder tri en amont 
         for i in range(len(self.variables)):
-            #print("A", list_var_sorted_by_nconstraints[i], instantiation)
             if list_var_sorted_by_nconstraints[i] not in instantiation:
                 return list_var_sorted_by_nconstraints[i]
     
@@ -137,8 +136,26 @@ class CSP:
         """ Naive approach : take the domain in its defaults order"""
         return domains[variable_name]
 
-    def heuristic_values_choice_2(self):
+    def heuristic_values_choice_2(self, instantiation, domains, variable_name):
         """most suppported value"""
+        dict_supporting_tuples = {u : 0 for u in domains[variable_name]}
+        for constraint in self.constraints[variable_name]:
+            if constraint.variables[0].name == variable_name:
+                idx_var = 0
+            else :
+                idx_var = 1
+            if constraint.variables[~idx_var].name not in instantiation:
+                for tuples in constraint.tuples:
+                    if tuples[idx_var] in domains[variable_name]:
+                        dict_supporting_tuples[tuples[idx_var]] += 1                
+        return sorted(dict_supporting_tuples.keys(), key=lambda x : dict_supporting_tuples[x], reverse=True)
+
+    def heuristic_values_selector(self, i, instantiation, domains, variable_name):
+        if i == 1:
+            return self.heuristic_values_choice_1(variable_name, domains)
+        elif i == 2:
+            return self.heuristic_values_choice_2(instantiation, domains, variable_name)
+
 
     # consistence algorithm
     def ac3(self):
@@ -179,19 +196,15 @@ class CSP:
             for variable in constraint.variables:
                 if variable.name != x:
                     y = variable.name
-            # print("C", instantiation, y)
             if y not in instantiation:
-                # print("A", new_domains)
-                # print("B", y.name)
                 for b in new_domains[y]:
                     instantiation = {x: a, y: b}
                     if not constraint.is_satisfied(instantiation):
-                        #print("value removed", y , b)
                         new_domains[y].remove(b)
         return new_domains
                 
 
-    def main(self, instantiation, mode_var_heuristic=3):
+    def main(self, instantiation, mode_var_heuristic=3, mode_val_selector=1):
         self.ac3()
 
         args_var_selection = ()
@@ -203,7 +216,7 @@ class CSP:
 
         # a ce stade, si un des domaines est vide, alors il n'y a pas de solution (logique)
         # idee : on peut dailleurs modif ac3 pour qu'il sarrete des qu'un domaine est vide
-        return self.backtracking(instantiation, self.domains, mode_var_heuristic=mode_var_heuristic, args_var_selection=args_var_selection)
+        return self.backtracking(instantiation, self.domains, mode_var_heuristic=mode_var_heuristic, args_var_selection=args_var_selection, mode_val_selector=mode_val_selector)
 
 
 
