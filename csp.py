@@ -73,7 +73,7 @@ class CSP:
             local_instantiation[var_name] = v
             #Forward checking
             local_domains = self.forward_checking(instantiation, domains, var_name, v)
-            # print(domains, local_domains)
+            print("A", var_name, local_domains)
 
             if self.backtracking(local_instantiation, local_domains, mode_var_heuristic, args_var_selection):
                 return True
@@ -137,6 +137,9 @@ class CSP:
         """ Naive approach : take the domain in its defaults order"""
         return domains[variable_name]
 
+    def heuristic_values_choice_2(self):
+        """most suppported value"""
+
     # consistence algorithm
     def ac3(self):
         print("\nAC results :")
@@ -170,6 +173,7 @@ class CSP:
 
     def forward_checking(self, instantiation, domains, x, a):  # change with .name
         new_domains = deepcopy(domains)
+        new_domains[x] = [a]
         for constraint in self.constraints[x]:
             y = None
             for variable in constraint.variables:
