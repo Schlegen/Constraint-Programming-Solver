@@ -51,8 +51,10 @@ if __name__ == "__main__":
     print(f"Solving Cartography Problem with n = {colors} colors and instance {file.split('/')[1]}...")
     # print(f"\nDomains {cartography.domains}")
 
-    solution = cartography.main(instantiation=dict())
+    solution, termination_status, execution_time, n_branching = cartography.main(instantiation=dict())
     print(f"\nThere is a solution : {solution}")
+    print(f"\nExecution time : {execution_time}")
+    print(f"\nNumber of branchings : {n_branching}\n")
     if solution:
         print(cartography.final_solution)
         cartography.show_solution()

@@ -1,3 +1,0 @@
-
-AC results :
-A ['x1']
