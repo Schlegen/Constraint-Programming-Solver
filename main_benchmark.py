@@ -5,6 +5,7 @@ from csp import CSP
 from utils.parser import parse_carto
 from cartography import Cartography
 from queens import Queens
+from sudoku import Sudoku
 
 import pandas as pd
 import argparse
@@ -123,6 +124,41 @@ if __name__ == "__main__":
                             ignore_index=True)
 
         df.to_csv(save_file, sep=";", index=False)
+
+        if mode == "sudoku":
+
+            queens = Sudoku(file_name=data_file)
+
+            solution, termination_status, execution_time, n_branching = queens.main(instantiation=dict(),
+                mode_var_heuristic=mode_var_heuristic, mode_val_heuristic=mode_val_heuristic, time_limit=time_limit,
+                forward_check=forward_checking, arc_consistence=arc_consistency)
+
+            # stockage des valeurs
+
+            solution_found = solution
+
+            df = pd.read_csv(save_file, sep=";")
+            df = df.set_index(["sudoku", "mode_var_heuristic", "mode_val_heuristic", "forward_checking", "arc_consistency"])
+
+            index = (param, mode_var_heuristic, mode_val_heuristic, forward_checking, arc_consistency)
+
+            if df.index.isin([index]).any():
+                df.at[index, "solution_found"] = solution
+                df.at[index, "termination_status"] = termination_status
+                df.at[index, "time_limit (s)"] = time_limit
+                df.at[index, "convergence_time (s)"] = execution_time
+                df.at[index, "n_nodes_open"] = n_branching
+                df.reset_index(inplace=True)
+
+            else:
+                df.reset_index(inplace=True)
+                df = df.append({"instance": data_file, "mode_var_heuristic":mode_var_heuristic, "mode_val_heuristic": mode_val_heuristic,
+                                "termination_status": termination_status, "convergence_time (s)": execution_time, "n_nodes_open": n_branching,
+                                "solution_found" : solution, "time_limit (s)": time_limit, "forward_checking": forward_checking,
+                                "arc_consistency" : arc_consistency},
+                               ignore_index=True)
+
+            df.to_csv(save_file, sep=";", index=False)
 
 
 
