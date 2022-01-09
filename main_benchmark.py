@@ -37,6 +37,7 @@ if __name__ == "__main__":
     param = args.parameter
 
     mode_var_heuristic=args.var_heuristic
+    mode_val_heuristic=args.val_heuristic
     
     time_limit = args.timelimit
     start = time.time()
@@ -46,7 +47,7 @@ if __name__ == "__main__":
         
         cartography = Cartography(nb_colors=param, file_name=data_file)
         #print(f"Solving Cartography Problem with n = {param} colors and instance {file.split('/')[1]}...")
-        solution = cartography.main(instantiation=dict(), mode_var_heuristic=mode_var_heuristic)
+        solution = cartography.main(instantiation=dict(), mode_var_heuristic=mode_var_heuristic, mode_val_heuristic=mode_val_heuristic)
     
         #stockage des valeurs
         terminated = True #TODO: changer les returns de la fonction
@@ -57,9 +58,9 @@ if __name__ == "__main__":
 
 
         df = pd.read_csv(save_file, sep=";")
-        df = df.set_index(["instance", "n_colors", "mode_var_heuristic"])
+        df = df.set_index(["instance", "n_colors", "mode_var_heuristic", "mode_val_heuristic"])
 
-        index = (data_file, param, mode_var_heuristic)
+        index = (data_file, param, mode_var_heuristic, mode_val_heuristic)
 
         if df.index.isin([index]).any():
             df.at[index, "termination_status"] = terminated
@@ -70,7 +71,7 @@ if __name__ == "__main__":
         else:
             df.reset_index(inplace=True)
             df = df.append({"instance": data_file, "n_colors": n_colors, "termination_status": terminated, "convergence_time":convergence_time, "n_nodes_open": n_nodes_open, 
-            "mode_var_heuristic":mode_var_heuristic},
+            "mode_var_heuristic":mode_var_heuristic, "mode_val_heuristic":mode_val_heuristic},
                             ignore_index=True)
 
         df.to_csv(save_file, sep=";", index=False)
@@ -79,7 +80,7 @@ if __name__ == "__main__":
         
         queens = Queens(nb_columns=param)
 
-        solution = queens.main(instantiation=dict())
+        solution = queens.main(instantiation=dict(), mode_var_heuristic=mode_var_heuristic, mode_val_heuristic=mode_val_heuristic)
 
         #stockage des valeurs
         terminated = True #TODO: changer les returns de la fonction
@@ -90,21 +91,22 @@ if __name__ == "__main__":
 
 
         df = pd.read_csv(save_file, sep=";")
-        df = df.set_index(["nqueens"])
+        df = df.set_index(["nqueens", "mode_var_heuristic", "mode_val_heuristic"])
 
-        index = (data_file, param)
+        index = (param, mode_var_heuristic, mode_val_heuristic)
 
         if df.index.isin([index]).any():
             df.at[index, "termination_status"] = terminated
             df.at[index, "convergence_time"] = convergence_time
             df.at[index, "n_nodes_open"] = n_nodes_open
             df.at[index, "mode_var_heuristic"] = mode_var_heuristic
+            df.at[index, "mode_val_heuristic"] = mode_val_heuristic
             df.reset_index(inplace=True)
 
         else:
             df.reset_index(inplace=True)
             df = df.append({"nqueens": param, "termination_status": terminated, "convergence_time":convergence_time, "n_nodes_open": n_nodes_open, 
-            "mode_var_heuristic":mode_var_heuristic},
+            "mode_var_heuristic":mode_var_heuristic, "mode_val_heuristic":mode_val_heuristic},
                             ignore_index=True)
 
         df.to_csv(save_file, sep=";", index=False)
