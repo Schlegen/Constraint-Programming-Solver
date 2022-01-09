@@ -52,13 +52,13 @@ class Queens(CSP):
 
         plt.show()
 
+if __name__ == "__main__":
+    nb_queens = 12
+    queens = Queens(nb_columns=nb_queens)
+    print(f"Solving n Queens with n = {nb_queens} ...")
+    # print(f"\nDomains {queens.domains}")
 
-nb_queens = 12
-queens = Queens(nb_columns=nb_queens)
-print(f"Solving n Queens with n = {nb_queens} ...")
-# print(f"\nDomains {queens.domains}")
-
-solution = queens.main(instantiation=dict())
-print(f"\nThere is a solution : {solution}")
-print(f"Solution : {queens.final_solution}")
-queens.show_solution()
+    solution = queens.main(instantiation=dict())
+    print(f"\nThere is a solution : {solution}")
+    print(f"Solution : {queens.final_solution}")
+    queens.show_solution()

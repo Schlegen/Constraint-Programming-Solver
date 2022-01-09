@@ -1,0 +1,7 @@
+
+AC results :
+- value 1 not supported for var x2
+- value 1 not supported for var x1
+- value 2 not supported for var x2
+- value 2 not supported for var x1
+A ['x1', 'x2']
