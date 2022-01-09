@@ -54,7 +54,7 @@ class CSP:
             execution_time : execution_time
             n_visited_nodes : number_of_nodes visted during the research
         """
-
+        #print("A", instantiation)
         if time.time() - starting_time > time_limit:
             return False, False, time.time() - starting_time, n_branching
             
@@ -88,6 +88,7 @@ class CSP:
             local_instantiation = instantiation.copy()
             local_instantiation[var_name] = v
             #Forward checking
+            sons_result = []
             if forward_check:
                 local_domains = self.forward_checking(instantiation, domains, var_name, v)
 
@@ -187,9 +188,9 @@ class CSP:
         to_test = list()
         for constraint in self.constraints_list:
             var = constraint.variables
-            to_test += [var]
-            var.reverse()  # Tres important !! cf remarque : contrainte directionnelle dans slides cours 2
-            to_test += [var]
+            to_test.append(var)
+            #var.reverse()  # Tres important !! cf remarque : contrainte directionnelle dans slides cours 2
+            to_test.append((var[1], var[0]))
         while len(to_test) > 0:
             (x, y) = to_test.pop()
             instantiation = {x.name: None,
@@ -228,12 +229,12 @@ class CSP:
         return new_domains
 
     def main(self, instantiation, mode_var_heuristic=3, mode_val_heuristic=2, time_limit=np.inf,
-             forward_check=True, arc_consistence=True):
+             forward_check=False, arc_consistence=True):
         if arc_consistence:
             self.ac3()
             # a ce stade, si un des domaines est vide, alors il n'y a pas de solution (logique)
             # idee : on peut dailleurs modif ac3 pour qu'il sarrete des qu'un domaine est vide
-
+        #print([(e.variables[0].name, e.variables[1].name) for e in self.constraints["x1,3"]]) 
         args_var_selection = ()
         if mode_var_heuristic == 3:
             list_var_sorted_by_nconstraints = self.compute_list_heuristic_var_3()
