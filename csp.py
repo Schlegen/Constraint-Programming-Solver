@@ -40,7 +40,7 @@ class CSP:
                 return False
         return True
 
-    def backtracking(self, instantiation, domains, mode_var_heuristic=1, args_var_selection=(), mode_val_heuristic=1, starting_time=0, time_limit=np.inf, n_branching=0):
+    def backtracking(self, instantiation, domains, mode_var_heuristic=1, args_var_selection=(), mode_val_heuristic=1, starting_time=0, time_limit=np.inf, n_branching=0, forward_check=True):
         """
         Backtracking algorithm
 
@@ -87,9 +87,14 @@ class CSP:
             local_instantiation = instantiation.copy()
             local_instantiation[var_name] = v
             #Forward checking
-            local_domains = self.forward_checking(instantiation, domains, var_name, v)
+            if forward_check:
+                local_domains = self.forward_checking(instantiation, domains, var_name, v)
 
-            sons_result = self.backtracking(local_instantiation, local_domains, mode_var_heuristic, args_var_selection, mode_val_heuristic, starting_time, time_limit, n_branching=n_branching)
+            else:
+                local_domains = deepcopy(domains)
+                local_domains[var_name] = [v]
+
+            sons_result = self.backtracking(local_instantiation, local_domains, mode_var_heuristic, args_var_selection, mode_val_heuristic, starting_time, time_limit, n_branching, forward_check)
             n_branching = sons_result[3]
             if sons_result[0]: 
                 return True, True, time.time() - starting_time, n_branching
@@ -223,8 +228,9 @@ class CSP:
         return new_domains
                 
 
-    def main(self, instantiation, mode_var_heuristic=3, mode_val_heuristic=2, time_limit=np.inf):
-        self.ac3()
+    def main(self, instantiation, mode_var_heuristic=3, mode_val_heuristic=2, time_limit=np.inf, forward_check=True, arc_consistence=True):
+        if arc_consistence:
+            self.ac3()
 
         args_var_selection = ()
         if mode_var_heuristic == 3:
@@ -235,7 +241,7 @@ class CSP:
 
         # a ce stade, si un des domaines est vide, alors il n'y a pas de solution (logique)
         # idee : on peut dailleurs modif ac3 pour qu'il sarrete des qu'un domaine est vide
-        return self.backtracking(instantiation, self.domains, mode_var_heuristic=mode_var_heuristic, args_var_selection=args_var_selection, mode_val_heuristic=mode_val_heuristic, starting_time=time.time(), time_limit=time_limit)
+        return self.backtracking(instantiation, self.domains, mode_var_heuristic=mode_var_heuristic, args_var_selection=args_var_selection, mode_val_heuristic=mode_val_heuristic, starting_time=time.time(), time_limit=time_limit, forward_check=forward_check)
 
 
 

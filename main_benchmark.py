@@ -28,6 +28,8 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--parameter", help="number of queens or number of colors", type=int, default=4)
     parser.add_argument("-var", "--var_heuristic", help="which heuristic to branch on the variables", type=int, default=1)
     parser.add_argument("-val", "--val_heuristic", help="which heuristic to branch on the values", type=int, default=1)
+    parser.add_argument("--no_forward_checking", help="which heuristic to branch on the variables", default=True, action="store_false")
+    parser.add_argument("--no_arc_consistency", help="which heuristic to branch on the values", default=True, action="store_false")
     #option pour lancer les benchmarks
     args = parser.parse_args()
 
@@ -41,16 +43,18 @@ if __name__ == "__main__":
     
     time_limit = args.timelimit
 
+    forward_checking = args.no_forward_checking
+    arc_consistency = args.no_arc_consistency
 
     # mode queens
     if mode == "cartography":
         
         cartography = Cartography(nb_colors=param, file_name=data_file)
         #print(f"Solving Cartography Problem with n = {param} colors and instance {file.split('/')[1]}...")
-        solution, termination_status, execution_time, n_branching = cartography.main(instantiation=dict(), mode_var_heuristic=mode_var_heuristic, mode_val_heuristic=mode_val_heuristic, time_limit=time_limit)
+        solution, termination_status, execution_time, n_branching = cartography.main(instantiation=dict(), 
+            mode_var_heuristic=mode_var_heuristic, mode_val_heuristic=mode_val_heuristic, time_limit=time_limit, 
+            forward_check=forward_checking, arc_consistence=arc_consistency)
     
-        
-
         #stockage des valeurs
         terminated = True #TODO: changer les returns de la fonction
         solution_found = solution
@@ -59,25 +63,27 @@ if __name__ == "__main__":
 
 
         df = pd.read_csv(save_file, sep=";")
-        df = df.set_index(["instance", "n_colors", "mode_var_heuristic", "mode_val_heuristic"])
+        df = df.set_index(["instance", "n_colors", "mode_var_heuristic", "mode_val_heuristic", "forward_checking", "arc_consistency"])
 
-        index = (data_file, param, mode_var_heuristic, mode_val_heuristic)
+        index = (data_file, param, mode_var_heuristic, mode_val_heuristic, forward_checking, arc_consistency)
 
         if df.index.isin([index]).any():
             df.at[index, "solution_found"] = solution
             df.at[index, "termination_status"] = termination_status
             df.at[index, "convergence_time (s)"] = execution_time
             df.at[index, "time_limit (s)"] = time_limit
-            df.at[index, "n_nodes_open"] = n_nodes_open
+            df.at[index, "n_nodes_open"] = n_branching
+
             df.reset_index(inplace=True)
 
         else:
             df.reset_index(inplace=True)
             df = df.append({"instance": data_file, "n_colors": n_colors,"mode_var_heuristic":mode_var_heuristic, 
-            "mode_val_heuristic":mode_val_heuristic, "termination_status": termination_status, "convergence_time (s)":execution_time, 
-            "n_nodes_open": n_branching, "time_limit (s)": time_limit, "solution_found" : solution
+                "mode_val_heuristic":mode_val_heuristic, "termination_status": termination_status, "convergence_time (s)":execution_time, 
+                "n_nodes_open": n_branching, "time_limit (s)": time_limit, "solution_found" : solution, "forward_checking" : forward_checking, 
+                "arc_consistency" : arc_consistency
             },
-                            ignore_index=True)
+            ignore_index=True)
 
         df.to_csv(save_file, sep=";", index=False)
 
@@ -85,8 +91,9 @@ if __name__ == "__main__":
         
         queens = Queens(nb_columns=param)
 
-        solution, termination_status, execution_time, n_branching = queens.main(instantiation=dict(), mode_var_heuristic=mode_var_heuristic,
-                                    mode_val_heuristic=mode_val_heuristic, time_limit=time_limit)
+        solution, termination_status, execution_time, n_branching = queens.main(instantiation=dict(), 
+            mode_var_heuristic=mode_var_heuristic, mode_val_heuristic=mode_val_heuristic, time_limit=time_limit,
+            forward_check=forward_checking, arc_consistence=arc_consistency)
 
         #stockage des valeurs
         
@@ -95,9 +102,9 @@ if __name__ == "__main__":
 
 
         df = pd.read_csv(save_file, sep=";")
-        df = df.set_index(["nqueens", "mode_var_heuristic", "mode_val_heuristic"])
+        df = df.set_index(["nqueens", "mode_var_heuristic", "mode_val_heuristic", "forward_checking", "arc_consistency"])
 
-        index = (param, mode_var_heuristic, mode_val_heuristic)
+        index = (param, mode_var_heuristic, mode_val_heuristic, forward_checking, arc_consistency)
 
         if df.index.isin([index]).any():
             df.at[index, "solution_found"] = solution
@@ -110,8 +117,9 @@ if __name__ == "__main__":
         else:
             df.reset_index(inplace=True)
             df = df.append({"nqueens": param, "mode_var_heuristic":mode_var_heuristic, "mode_val_heuristic":mode_val_heuristic, 
-            "termination_status": termination_status, "convergence_time (s)":execution_time, "n_nodes_open": n_branching,
-            "solution_found" : solution, "time_limit (s)": time_limit},
+                    "termination_status": termination_status, "convergence_time (s)":execution_time, "n_nodes_open": n_branching,
+                    "solution_found" : solution, "time_limit (s)": time_limit, "forward_checking" : forward_checking, 
+                    "arc_consistency" : arc_consistency},
                             ignore_index=True)
 
         df.to_csv(save_file, sep=";", index=False)

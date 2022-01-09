@@ -1,1 +1,5 @@
-nqueens;mode_var_heuristic;mode_val_heuristic;time_limit (s);convergence_time (s);n_nodes_open;termination_status;solution_found
+nqueens;mode_var_heuristic;mode_val_heuristic;forward_checking;arc_consistency;time_limit (s);convergence_time (s);n_nodes_open;termination_status;solution_found
+17.0;1.0;1.0;1.0;1.0;200;6.2785513401031485;6099;True;True
+17.0;1.0;1.0;0.0;1.0;200;44.99156045913696;91222;True;True
+17.0;1.0;1.0;0.0;0.0;200;28.48044204711914;91222;True;True
+17.0;1.0;1.0;1.0;0.0;200;4.748379945755005;6099;True;True
