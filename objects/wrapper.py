@@ -30,12 +30,17 @@ def queens_columns_constraint(variables, domains, a=1, b=-1):
     return constraints
 
 
+# MARCHE PAS
 def queens_binary_var_constraints(variables, nb_columns):
     constraints = list()
+    var_treated = list()
     for i1 in range(nb_columns):
         for j1 in range(nb_columns):
-            for i2 in range(i1, nb_columns):
-                for j2 in range(j1, nb_columns):
+            for i2 in range(nb_columns):
+                for j2 in range(nb_columns):
+                    var_treated.append([(i1, j1), (i2, j2)])
+                    var_treated.append([(i2, j2), (i1, j1)])
+
                     tuples = [(1, 0), (0, 1)]
                     index_1 = i1 * nb_columns + j1
                     index_2 = i2 * nb_columns + j2
@@ -44,9 +49,15 @@ def queens_binary_var_constraints(variables, nb_columns):
                     same_column = (j1 == j2) and (i1 != i2)
                     same_diag = (i1 < i2 and j2 - j1 == i2 - i1) or (i1 < i2 and j1 - j2 == i2 - i1)
 
+                    if same_diag:
+                        tuples.append((0, 0))
+
                     if same_column or same_row or same_diag:
+                        #tuples = [(1, 0), (0, 1), (1, 1), (0, 0)]
+
                         constraint = Constraint(variables[index_1], variables[index_2], tuples)
                         constraints.append(constraint)
+
     return constraints
 
 

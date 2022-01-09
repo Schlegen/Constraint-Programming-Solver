@@ -6,6 +6,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+# MARCHE PAS
+
+
 class VariableQueensBinary(Variable):
     def __init__(self, name, i, j):
         super().__init__(name)
