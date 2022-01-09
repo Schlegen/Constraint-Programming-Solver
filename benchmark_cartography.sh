@@ -8,6 +8,7 @@ for file in ${data_list[@]}; do
             for val_heuristic in {1..2}; do
                 echo $file $color $var_heuristic $val_heuristic
                 python3 main_benchmark.py -m "cartography" -d $file -s "saves/scores_cartography.csv" -p $color -var $var_heuristic -val $val_heuristic > "logs/logs_carto/${color}_${var_heuristic}.txt"
+            done
         done
     done
 done

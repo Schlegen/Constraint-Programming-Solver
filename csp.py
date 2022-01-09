@@ -93,6 +93,8 @@ class CSP:
             n_branching = sons_result[3]
             if sons_result[0]: 
                 return True, True, time.time() - starting_time, n_branching
+            if not sons_result[1]: 
+                return False, False, time.time() - starting_time, n_branching
 
         return False, True, time.time() - starting_time, n_branching
 

@@ -110,8 +110,8 @@ if __name__ == "__main__":
         else:
             df.reset_index(inplace=True)
             df = df.append({"nqueens": param, "mode_var_heuristic":mode_var_heuristic, "mode_val_heuristic":mode_val_heuristic, 
-            "termination_status": termination_status, "convergence_time  (s)":execution_time, "n_nodes_open": n_branching,
-            "solution_found" : solution, "time_limit  (s)": time_limit},
+            "termination_status": termination_status, "convergence_time (s)":execution_time, "n_nodes_open": n_branching,
+            "solution_found" : solution, "time_limit (s)": time_limit},
                             ignore_index=True)
 
         df.to_csv(save_file, sep=";", index=False)
