@@ -1,31 +1,9 @@
 from objects.variable import Variable
 from objects.domain import Domain
-from objects.constraint import Constraint
-from objects.wrapper import alldiff_constraint, queens_columns_constraint
+from objects.wrapper import alldiff_constraint, queens_binary_var_constraints
 from csp import CSP
 import numpy as np
 import matplotlib.pyplot as plt
-
-
-def queens_binary_var_constraints(variables, nb_columns):
-    constraints = list()
-    for i1 in range(nb_columns):
-        for j1 in range(nb_columns):
-            for i2 in range(nb_columns):
-                for j2 in range(j1, nb_columns):
-                    tuples = [(1, 0), (0, 1)]
-                    index_1 = i1 * nb_columns + j1
-                    index_2 = i2 * nb_columns + j2
-
-                    same_row = (i1 == i2)
-                    same_column = (j1 == j2)
-                    same_diag = (i1 < i2 and j2 - j1 == i2 - i1) or (i1 < i2 and j1 - j2 == i2 - i1)
-
-                    if same_column or same_row or same_diag:
-                        constraint = Constraint(variables[index_1], variables[index_2], tuples)
-                        constraints.append(constraint)
-
-    return constraints
 
 
 class VariableQueensBinary(Variable):
@@ -82,12 +60,20 @@ class QueensModel2(CSP):
         plt.show()
 
 
-nb_queens = 12
-queens = Queens(nb_columns=nb_queens)
-print(f"Solving n Queens with n = {nb_queens} ...")
-# print(f"\nDomains {queens.domains}")
+if __name__ == "__main__":
+    nb_queens = 5
+    queens = QueensModel2(nb_columns=nb_queens)
+    var = list(queens.constraints.keys())[0]
+    print(var)
+    print(queens.constraints)
+    cons = queens.constraints[var]
+    print([[var.name for var in c.variables] for c in cons])
 
-solution = queens.main(instantiation=dict())
-print(f"\nThere is a solution : {solution}")
-print(f"Solution : {queens.final_solution}")
-queens.show_solution()
+    print(f"Solving n Queens with n = {nb_queens} ...")
+    # print(f"\nDomains {queens.domains}")
+
+    solution = queens.main(instantiation=dict())
+    print(f"\nThere is a solution : {solution}")
+    if solution:
+        print(f"Solution : {queens.final_solution}")
+        queens.show_solution()
