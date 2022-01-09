@@ -76,3 +76,46 @@ def cartography_constraints(variables, domains, edges):
                                           domains)  # -1 because list first index is 0 (not 1)
     return constraints
 
+
+def sudoku_constraints(variables, domains):
+    constraints = list()
+    blocks = sudoku_blocks()
+
+    for i in range(9):
+        row = list()
+        column = list()
+        for j in range(9):
+            index = 9 * i + j
+            index_sym = 9 * j + i
+
+            row.append(variables[index])
+            column.append(variables[index_sym])
+
+        constraints += alldiff_constraint(row, domains)
+        constraints += alldiff_constraint(column, domains)
+    #
+    # for block in blocks:
+    #     cells = list()
+    #     for cell in block:
+    #         i, j = cell  # coordinates of the cell
+    #         index = 9 * i + j
+    #         cells.append(variables[index])
+    #     constraints += alldiff_constraint(cells, domains)
+
+    return constraints
+
+
+def sudoku_blocks():
+    blocks = list()
+    for i in range(3):
+        for j in range(3):
+            si, sj = (3 * i, 3 * j)
+            block = list()
+            for u in range(3):
+                for v in range(3):
+                    block.append((si + u, sj + v))
+    return blocks
+
+
+
+
