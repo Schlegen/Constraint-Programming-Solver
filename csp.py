@@ -192,8 +192,8 @@ class CSP:
             to_test += [var]
         while len(to_test) > 0:
             (x, y) = to_test.pop()
-            instantiation = {x.name: 0,
-                             y.name: 0}
+            instantiation = {x.name: None,
+                             y.name: None}
             for x_value in self.domains[x.name]:
                 # until line 100 : check if x_value has a support
                 instantiation[x.name] = x_value

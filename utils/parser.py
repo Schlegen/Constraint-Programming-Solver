@@ -13,7 +13,6 @@ def parse_sudoku(file_name):
     pre_assigned = dict()
     for line in file:
         line_split = line.split(",")
-        print(line_split)
         pre_assigned[(int(line_split[0]), int(line_split[1]))] = int(line_split[2])
     return pre_assigned
 

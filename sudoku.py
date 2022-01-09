@@ -7,20 +7,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-class VariableSudoku(Variable):
-    def __init__(self, name, i, j):
-        super().__init__(name)
-        self.index = (i, j)
-
-
 class Sudoku(CSP):
     def __init__(self, file_name):
 
         self.pre_assigned = parse_sudoku(file_name)
-        print(self.pre_assigned)
 
         # Variables
-        variables = [VariableSudoku("x" + str(i) + "," + str(j), i, j)
+        variables = [Variable("x" + str(i) + "," + str(j))
                      for i in range(1, 10)
                      for j in range(1, 10)]
 
@@ -28,13 +21,13 @@ class Sudoku(CSP):
         domains = Domain(variables)
         domains.fill_all_domains_by_range(lb=1, ub=9)
 
+        # Constraints
+        constraints = sudoku_constraints(variables, domains.dict)
+
         for cell in self.pre_assigned:
             i, j = cell  # coordinates of the pre_assigned cell
             value = self.pre_assigned[cell]
             domains.dict["x" + str(i) + "," + str(j)] = [value]
-
-        # Constraints
-        constraints = sudoku_constraints(variables, domains.dict)
 
         super().__init__(variables=variables, domains=domains, constraints=constraints)
 
@@ -76,7 +69,7 @@ class Sudoku(CSP):
             i, j = var
             grid[i - 1][j - 1] = self.pre_assigned[var]
 
-        plt.figure(f"Sudoku solution :")
+        plt.figure(f"Sudoku pre assigned :")
         plt.imshow(grid, cmap='Pastel1')
         # fig.axes.get_xaxis().set_visible(False)
         # fig.axes.get_yaxis().set_visible(False)
@@ -101,24 +94,19 @@ class Sudoku(CSP):
 if __name__ == "__main__":
     file = "instances/sudoku_2.txt"
     sudoku = Sudoku(file_name=file)
-    var = list(sudoku.constraints.keys())[13]
-
-    print(var)
-    cons = sudoku.constraints[var]
-    # print([([var.name for var in c.variables], c.tuples) for c in cons])
-    print([([var.name for var in c.variables]) for c in cons])
 
     sudoku.show_pre_assigned()
 
     print(f"\nSolving Sudoku with instance = {file} ...")
-    print(f"\nDomains {sudoku.domains['x1,1']}")
+    #print(f"\nDomains {sudoku.domains}")
 
-    solution = sudoku.main(instantiation=dict())
+    solution, termination_status, execution_time, n_branching = sudoku.main(instantiation=dict(),
+                                                                            arc_consistence=True,
+                                                                            forward_check=True)
     print(f"\nThere is a solution : {solution}")
     if solution:
         print(f"Solution : {sudoku.final_solution}")
         sudoku.show_solution()
-
 
   	# // Toutes les variables d'un sous-tableau sont differentes
     # forall (i in sousTableaux) {
