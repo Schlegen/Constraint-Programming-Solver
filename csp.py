@@ -75,7 +75,6 @@ class CSP:
         if not domains[var_name]: # liste vide
             return False, True, time.time() - starting_time, n_branching
 
-
         # values = self.heuristic_values_choice_1(var_name, domains)
 
         values = self.heuristic_values_selector(mode_val_heuristic, instantiation, domains, var_name)
@@ -187,9 +186,9 @@ class CSP:
         to_test = list()
         for constraint in self.constraints_list:
             var = constraint.variables
-            to_test += [var]
-            var.reverse()  # Tres important !! cf remarque : contrainte directionnelle dans slides cours 2
-            to_test += [var]
+            to_test.append(var)
+            var = var[1], var[0] # Tres important !! cf remarque : contrainte directionnelle dans slides cours 2
+            to_test.append(var)
         while len(to_test) > 0:
             (x, y) = to_test.pop()
             instantiation = {x.name: None,
@@ -231,6 +230,7 @@ class CSP:
              forward_check=True, arc_consistence=True):
         if arc_consistence:
             self.ac3()
+            print("--")
             # a ce stade, si un des domaines est vide, alors il n'y a pas de solution (logique)
             # idee : on peut dailleurs modif ac3 pour qu'il sarrete des qu'un domaine est vide
 

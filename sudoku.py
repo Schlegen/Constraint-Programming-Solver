@@ -64,12 +64,13 @@ class Sudoku(CSP):
 
     def show_pre_assigned(self):
         n = 9
-        grid = np.zeros((n, n))
+        grid = np.empty((n, n))
+        grid[:] = np.NaN
         for var in self.pre_assigned.keys():
             i, j = var
             grid[i - 1][j - 1] = self.pre_assigned[var]
 
-        plt.figure(f"Sudoku pre assigned :")
+        plt.figure(f"Sudoku pre assigned values")
         plt.imshow(grid, cmap='Pastel1')
         # fig.axes.get_xaxis().set_visible(False)
         # fig.axes.get_yaxis().set_visible(False)
@@ -92,15 +93,23 @@ class Sudoku(CSP):
 
 
 if __name__ == "__main__":
-    file = "instances/sudoku_2.txt"
+    file = "instances/sudoku_1.txt"
     sudoku = Sudoku(file_name=file)
 
     sudoku.show_pre_assigned()
+    #print(sudoku.constraints["x1,1"][0])
+
+    # print([[(cons.variables, [tup for tup in cons.tuples]) for cons in sudoku.constraints[var]]
+    # for var in sudoku.constraints])
+    # print([([v.name for v in cons.variables], [tup for tup in cons.tuples]) for cons in sudoku.constraints["x3,1"]])
+    # print([([v.name for v in cons.variables]) for cons in sudoku.constraints["x3,1"]])
 
     print(f"\nSolving Sudoku with instance = {file} ...")
     #print(f"\nDomains {sudoku.domains}")
 
     solution, termination_status, execution_time, n_branching = sudoku.main(instantiation=dict(),
+                                                                            mode_var_heuristic=1,
+                                                                            mode_val_heuristic=1,
                                                                             arc_consistence=True,
                                                                             forward_check=True)
     print(f"\nThere is a solution : {solution}")
