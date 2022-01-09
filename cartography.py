@@ -38,37 +38,22 @@ class Cartography(CSP):
 
         G = nx.Graph()
 
-        # colors = []
-        # for _ in range(self.nb_colors):
-        #     colors.append('#%06X' % randint(0, 0xFFFFFF))
-        
-        # for key, color_code in self.final_solution.items():
-        #     print(key)
-
-        #nodes = [(key, {"color" : "red"}) for key, color_code in self.final_solution.items()]
-        #print(nodes)
         G.add_nodes_from(self.final_solution.keys())#nodes)
-
-        # print(G.nodes)
-        # print(self.edges)
-        # print([(list(G.nodes)[e[0]-1], list(G.nodes)[e[1]-1]) for e in self.edges])
-        G.add_edges_from([(list(G.nodes)[e[0]-1], list(G.nodes)[e[1]-1]) for e in self.edges])
+        G.add_edges_from([("x" + str(e[0]), "x" + str(e[1])) for e in self.edges])
 
         nx.draw(G, with_labels=True, cmap=plt.cm.tab20, node_color=list(self.final_solution.values()))
         plt.show()          
         return 0
 
+if __name__ == "__main__":
+    colors = 5
+    file = "instances/carto_queen5_5_opti5.txt"
+    cartography = Cartography(nb_colors=colors, file_name=file)
+    print(f"Solving Cartography Problem with n = {colors} colors and instance {file.split('/')[1]}...")
+    # print(f"\nDomains {cartography.domains}")
 
-
-
-
-colors = 5
-file = "instances/carto_queen5_5_opti5.txt"
-cartography = Cartography(nb_colors=colors, file_name=file)
-print(f"Solving Cartography Problem with n = {colors} colors and instance {file.split('/')[1]}...")
-# print(f"\nDomains {cartography.domains}")
-
-solution = cartography.main(instantiation=dict())
-print(f"\nThere is a solution : {solution}")
-print(cartography.final_solution)
-cartography.show_solution()
+    solution = cartography.main(instantiation=dict())
+    print(f"\nThere is a solution : {solution}")
+    if solution:
+        print(cartography.final_solution)
+        cartography.show_solution()
