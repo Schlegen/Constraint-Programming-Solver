@@ -54,7 +54,7 @@ class Queens(CSP):
 
 
 if __name__ == "__main__":
-    nb_queens = 12
+    nb_queens = 3
     queens = Queens(nb_columns=nb_queens)
     print(f"Solving n Queens with n = {nb_queens} ...")
     # print(f"\nDomains {queens.domains}")
@@ -63,5 +63,6 @@ if __name__ == "__main__":
     print(f"\nThere is a solution : {solution}")
     print(f"\nExecution time : {execution_time}")
     print(f"\nNumber of branchings : {n_branching}")
-    print(f"\nSolution : {queens.final_solution}")
-    queens.show_solution()
+    if solution:
+        print(f"\nSolution : {queens.final_solution}")
+        queens.show_solution()
