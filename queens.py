@@ -52,6 +52,7 @@ class Queens(CSP):
 
         plt.show()
 
+
 if __name__ == "__main__":
     nb_queens = 12
     queens = Queens(nb_columns=nb_queens)

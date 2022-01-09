@@ -6,8 +6,6 @@ from utils.parser import parse_carto
 import matplotlib.pyplot as plt
 import networkx as nx
 from random import randint
-import matplotlib.pyplot as plt
-
 
 
 class Cartography(CSP):
@@ -44,6 +42,7 @@ class Cartography(CSP):
         nx.draw(G, with_labels=True, cmap=plt.cm.tab20, node_color=list(self.final_solution.values()))
         plt.show()          
         return 0
+
 
 if __name__ == "__main__":
     colors = 5
