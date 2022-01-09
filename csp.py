@@ -3,6 +3,8 @@ from networkx.algorithms.assortativity.correlation import numeric_assortativity_
 from networkx.algorithms.structuralholes import constraint
 from utils.csp_errors import DomainError, UnknownVariable
 from copy import copy, deepcopy
+import numpy as np
+import time
 
 
 class CSP:
@@ -38,21 +40,31 @@ class CSP:
                 return False
         return True
 
-    def backtracking(self, instantiation, domains, mode_var_heuristic=1, args_var_selection=(), mode_val_selector=1):
+    def backtracking(self, instantiation, domains, mode_var_heuristic=1, args_var_selection=(), mode_val_heuristic=1, starting_time=0, time_limit=np.inf, n_branching=0):
         """
         Backtracking algorithm
 
         Args:
             instantiation (dict[Variable, int]): partial instantiation of the CSP
+
+        return:
+            solution_found : Bool
+            termination_status : indicates whether the research terminated in the given time
+            execution_time : execution_time
+            n_visited_nodes : number_of_nodes visted during the research
         """
+
+        if time.time() - starting_time > time_limit:
+            return False, False, time.time() - starting_time, n_branching
+            
         for variable_name in instantiation:
             if not self.is_consistent(variable_name, instantiation):
-                return False
+                return False, True, time.time() - starting_time, n_branching
 
         # If the instantiation is full
         if len(instantiation) == len(self.variables):
             self.final_solution = instantiation
-            return True
+            return True, True, time.time() - starting_time, n_branching
 
         # We pick a non-instantiated variable
         # var_name = self.heuristic_variable_choice_1(instantiation, domains)
@@ -60,24 +72,29 @@ class CSP:
  
         # We extract its possible values
         if not domains[var_name]: # liste vide
-            return False
+            return False, True, time.time() - starting_time, n_branching
 
 
         # values = self.heuristic_values_choice_1(var_name, domains)
 
-        values = self.heuristic_values_selector(mode_val_selector, instantiation, domains, var_name)
+        values = self.heuristic_values_selector(mode_val_heuristic, instantiation, domains, var_name)
+        # print(var_name, values, domains)
 
         # print(f"variable {var_name} with instantiation {instantiation}")
 
         for v in values:  # for all values in the domain of var
+            n_branching += 1
             local_instantiation = instantiation.copy()
             local_instantiation[var_name] = v
             #Forward checking
             local_domains = self.forward_checking(instantiation, domains, var_name, v)
 
-            if self.backtracking(local_instantiation, local_domains, mode_var_heuristic, args_var_selection):
-                return True
-        return False
+            sons_result = self.backtracking(local_instantiation, local_domains, mode_var_heuristic, args_var_selection, mode_val_heuristic, starting_time, time_limit, n_branching=n_branching)
+            n_branching = sons_result[3]
+            if sons_result[0]: 
+                return True, True, time.time() - starting_time, n_branching
+
+        return False, True, time.time() - starting_time, n_branching
 
     # Heuristic for variable choice (first variable allowed)
     def heuristic_variable_choice_1(self, instantiation, domains):
@@ -204,7 +221,7 @@ class CSP:
         return new_domains
                 
 
-    def main(self, instantiation, mode_var_heuristic=3, mode_val_selector=1):
+    def main(self, instantiation, mode_var_heuristic=3, mode_val_heuristic=2, time_limit=np.inf):
         self.ac3()
 
         args_var_selection = ()
@@ -216,7 +233,7 @@ class CSP:
 
         # a ce stade, si un des domaines est vide, alors il n'y a pas de solution (logique)
         # idee : on peut dailleurs modif ac3 pour qu'il sarrete des qu'un domaine est vide
-        return self.backtracking(instantiation, self.domains, mode_var_heuristic=mode_var_heuristic, args_var_selection=args_var_selection, mode_val_selector=mode_val_selector)
+        return self.backtracking(instantiation, self.domains, mode_var_heuristic=mode_var_heuristic, args_var_selection=args_var_selection, mode_val_heuristic=mode_val_heuristic, starting_time=time.time(), time_limit=time_limit)
 
 
 
