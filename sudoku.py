@@ -92,7 +92,7 @@ class Sudoku(CSP):
 
 
 if __name__ == "__main__":
-    file = "instances/sudoku_2.txt"
+    file = "instances/sudoku_1.txt"
     sudoku = Sudoku(file_name=file)
 
     sudoku.show_pre_assigned()
