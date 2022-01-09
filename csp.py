@@ -40,7 +40,8 @@ class CSP:
                 return False
         return True
 
-    def backtracking(self, instantiation, domains, mode_var_heuristic=1, args_var_selection=(), mode_val_heuristic=1, starting_time=0, time_limit=np.inf, n_branching=0, forward_check=True):
+    def backtracking(self, instantiation, domains, mode_var_heuristic=1, args_var_selection=(), mode_val_heuristic=1,
+                     starting_time=0, time_limit=np.inf, n_branching=0, forward_check=True):
         """
         Backtracking algorithm
 
@@ -180,7 +181,6 @@ class CSP:
         elif i == 2:
             return self.heuristic_values_choice_2(instantiation, domains, variable_name)
 
-
     # consistence algorithm
     def ac3(self):
         print("\nAC results :")
@@ -226,11 +226,13 @@ class CSP:
                     if not constraint.is_satisfied(instantiation):
                         new_domains[y].remove(b)
         return new_domains
-                
 
-    def main(self, instantiation, mode_var_heuristic=3, mode_val_heuristic=2, time_limit=np.inf, forward_check=True, arc_consistence=True):
+    def main(self, instantiation, mode_var_heuristic=3, mode_val_heuristic=2, time_limit=np.inf,
+             forward_check=True, arc_consistence=True):
         if arc_consistence:
             self.ac3()
+            # a ce stade, si un des domaines est vide, alors il n'y a pas de solution (logique)
+            # idee : on peut dailleurs modif ac3 pour qu'il sarrete des qu'un domaine est vide
 
         args_var_selection = ()
         if mode_var_heuristic == 3:
@@ -238,11 +240,7 @@ class CSP:
             print("A", list_var_sorted_by_nconstraints)
             args_var_selection = (list_var_sorted_by_nconstraints,)
 
-
-        # a ce stade, si un des domaines est vide, alors il n'y a pas de solution (logique)
-        # idee : on peut dailleurs modif ac3 pour qu'il sarrete des qu'un domaine est vide
         return self.backtracking(instantiation, self.domains, mode_var_heuristic=mode_var_heuristic, args_var_selection=args_var_selection, mode_val_heuristic=mode_val_heuristic, starting_time=time.time(), time_limit=time_limit, forward_check=forward_check)
-
 
 
 # IDEES :
