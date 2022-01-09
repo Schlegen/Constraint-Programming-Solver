@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for nqueens in {1..15};
+for nqueens in {19..20};
 do  
     for var_heuristic in {1..4}; do
         for val_heuristic in {1..2}; do
