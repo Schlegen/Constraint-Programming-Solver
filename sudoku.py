@@ -49,8 +49,8 @@ class Sudoku(CSP):
         ax = plt.gca()
 
         # Major ticks
-        ax.set_xticks(np.arange(0, n, 3))
-        ax.set_yticks(np.arange(0, n, 3))
+        ax.set_xticks([])
+        ax.set_yticks([])
 
         # Minor ticks
         ax.set_xticks(np.arange(-.5, n, 3), minor=True)
@@ -64,12 +64,13 @@ class Sudoku(CSP):
 
     def show_pre_assigned(self):
         n = 9
-        grid = np.zeros((n, n))
+        grid = np.empty((n, n))
+        grid[:] = np.NaN
         for var in self.pre_assigned.keys():
             i, j = var
             grid[i - 1][j - 1] = self.pre_assigned[var]
 
-        plt.figure(f"Sudoku pre assigned :")
+        plt.figure(f"Sudoku pre assigned values")
         plt.imshow(grid, cmap='Pastel1')
         # fig.axes.get_xaxis().set_visible(False)
         # fig.axes.get_yaxis().set_visible(False)
@@ -77,8 +78,8 @@ class Sudoku(CSP):
         ax = plt.gca()
 
         # Major ticks
-        ax.set_xticks(np.arange(0, n, 3))
-        ax.set_yticks(np.arange(0, n, 3))
+        ax.set_xticks([])
+        ax.set_yticks([])
 
         # Minor ticks
         ax.set_xticks(np.arange(-.5, n, 3), minor=True)
@@ -94,25 +95,24 @@ class Sudoku(CSP):
 if __name__ == "__main__":
     file = "instances/sudoku_1.txt"
     sudoku = Sudoku(file_name=file)
-
     sudoku.show_pre_assigned()
+    print(len(sudoku.pre_assigned))
 
     print(f"\nSolving Sudoku with instance = {file} ...")
-    #print(f"\nDomains {sudoku.domains}")
+    # print(f"\nDomains {sudoku.domains}")
 
     solution, termination_status, execution_time, n_branching = sudoku.main(instantiation=dict(),
-                                                                            arc_consistence=True,
-                                                                            forward_check=True)
+                                                                            mode_var_heuristic=1,
+                                                                            mode_val_heuristic=1,
+                                                                            arc_consistence=False,
+                                                                            forward_check=True,
+                                                                            time_limit=180)
+    if not termination_status:
+        print(f"\nInterruption : time limit has been attained")
     print(f"\nThere is a solution : {solution}")
+    print(f"\nExecution time : {execution_time}")
+    print(f"\nNumber of branchings : {n_branching}")
     if solution:
-        print(f"Solution : {sudoku.final_solution}")
+        print(f"\nSolution : {sudoku.final_solution}")
         sudoku.show_solution()
 
-  	# // Toutes les variables d'un sous-tableau sont differentes
-    # forall (i in sousTableaux) {
-    # 	forall (j in sousTableaux) {
-    # 	  // (i-1)*taille -> i*taille
-	#        allDifferent(all (i1 in ((i-1)*dimension+1)..(i*dimension),
-	#                          j1 in ((j-1)*dimension+1)..(j*dimension))
-	#                          tableau[i1][j1]);
-	#   	}

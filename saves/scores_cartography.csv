@@ -71,3 +71,9 @@ instances/carto_le450_5a_opti5.txt;6.0;3.0;1.0;1.0;1.0;200;False;200.00194859504
 instances/carto_le450_5a_opti5.txt;6.0;3.0;2.0;1.0;1.0;200;False;200.0032787322998;68900;False
 instances/carto_le450_5a_opti5.txt;6.0;4.0;1.0;1.0;1.0;200;False;200.00590825080872;31513;False
 instances/carto_le450_5a_opti5.txt;6.0;4.0;2.0;1.0;1.0;200;False;200.0047845840454;35054;False
+instances/carto_queen6_6_opti7.txt;6.0;2.0;1.0;1.0;1.0;200;True;68.31948971748352;180516;False
+instances/carto_queen6_6_opti7.txt;7.0;2.0;1.0;1.0;1.0;200;True;1.1667029857635498;1459;True
+instances/carto_queen6_6_opti7.txt;8.0;2.0;1.0;1.0;1.0;200;True;0.6054394245147705;92;True
+instances/carto_queen7_7_opti7.txt;6.0;2.0;1.0;1.0;1.0;200;True;1.2700035572052002;1956;False
+instances/carto_queen7_7_opti7.txt;7.0;2.0;1.0;1.0;1.0;200;True;0.8519918918609619;76;True
+instances/carto_queen7_7_opti7.txt;8.0;2.0;1.0;1.0;1.0;200;True;1.6294634342193604;574;True

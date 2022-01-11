@@ -54,7 +54,7 @@ class Queens(CSP):
 
 
 if __name__ == "__main__":
-    nb_queens = 3
+    nb_queens = 32
     queens = Queens(nb_columns=nb_queens)
     print(f"Solving n Queens with n = {nb_queens} ...")
     # print(f"\nDomains {queens.domains}")
