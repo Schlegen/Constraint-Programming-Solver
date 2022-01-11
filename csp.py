@@ -1,6 +1,3 @@
-from collections import defaultdict
-from networkx.algorithms.assortativity.correlation import numeric_assortativity_coefficient
-from networkx.algorithms.structuralholes import constraint
 from utils.csp_errors import DomainError, UnknownVariable
 from copy import copy, deepcopy
 import numpy as np
@@ -15,6 +12,7 @@ class CSP:
             domains (Domain)
         """
         self.final_solution = None
+        self.time_ac3 = 0
         self.variables = variables
         self.constraints = {}
         self.constraints_list = constraints
@@ -182,8 +180,9 @@ class CSP:
             return self.heuristic_values_choice_2(instantiation, domains, variable_name)
 
     # consistence algorithm
-    def ac3(self):
-        print("\nAC results :")
+    def ac3(self, verbose):
+        if verbose:
+            print("\nAC results :")
         to_test = list()
         for constraint in self.constraints_list:
             var = constraint.variables
@@ -204,7 +203,8 @@ class CSP:
                     if self.is_consistent(y.name, instantiation):
                         is_supported = True
                 if not is_supported:
-                    print("- value " + str(x_value) + " not supported for var " + str(x.name))
+                    if verbose:
+                        print("- value " + str(x_value) + " not supported for var " + str(x.name))
                     self.domains[x.name].remove(x_value)
                     for constraint in self.constraints[x.name]:
                         for z in constraint.variables:
@@ -231,11 +231,14 @@ class CSP:
 
         starting_time = time.time()    
         if arc_consistence:
-            self.ac3()
+            self.ac3(verbose=ac3_verbose)
             for var in self.domains:
                 if not self.domains[var]:
                     return False, True, 0, 0
-            print("END OF AC3")
+            if ac3_verbose:
+                print("END OF AC3")
+        end = time.time()
+        self.time_ac3 = end - start
 
         args_var_selection = ()
         if mode_var_heuristic == 3:
@@ -249,11 +252,4 @@ class CSP:
 # IDEES :
 
 # Comment choisir les heuristiques de selection en fonction du pb ??
-# ==> en faire plusieurs, meme si elles sont simples.
 # Idee d'aprofondissement : faire un truc intelligent qui choisit une en fonction du pb ou qqch comme ca
-
-
-# AC3 en init (à la racine)
-# puis a chaque noeud de l'arbre de recherche on fait quoi ? --> faire du forwardchecking (autre plan serait de faire du maintient d'AC : MAC)
-
-#colorabilite = pb de decision : on dit le nbre de couleurs et ça repond oui ou non
