@@ -1,27 +1,26 @@
 /*********************************************
  * OPL 12.10.0.0 Model
  * Author: maxime
- * Creation Date: 13 dÈc. 2021 at 14:59:29
+ * Creation Date: 13 dÔøΩc. 2021 at 14:59:29
  *********************************************/
 
 using CP;
 
-// Definition des donnÈes du problËmes
+// Definition des donnÔøΩes du problÔøΩmes
 int nb_emetteurs = 7;
 int valeurMax = 10;
 
+ 
 range valeurs = 1..valeurMax;
 range emetteurs = 1..nb_emetteurs;
 
 
-// Gestion de la paritÈ
-{int} emetteurs_pairs   = {2,4,6};
-{int} emetteurs_impairs = {1,3,5,7};
 
-range semi_valeurs = 1..5;
-
-//{int} valeurs_paires   = {2,4,6,8,10};
-//{int} valeurs_impaires = {1,3,5,7, 9};
+//// Gestion de la parite 2
+// int semiValMax = valeurMax div 2;
+//{int} emetteurs_pairs  = {2,4,6};
+//{int} emetteurs_impairs = {1,3,5,7};
+//range semi_valeurs = 1..semiValMax;
 
 // Definition de l'offset
 tuple offset {
@@ -33,16 +32,17 @@ tuple offset {
 {offset} offsets = ...;
 
 dvar int freq[emetteurs] in valeurs;
+//dvar int semi_freq[emetteurs] in semi_valeurs;
 
-// Variables auxiliaires, utiles pour dÈfinir la paritÈ
-dvar int semi_freq[emetteurs] in semi_valeurs;
-//dvar int freq_impaires[emetteurs_impairs] in valeurs_impaires;
+// Variable auxiliaire pour dÔøΩfinir le max
+dvar int freq_max in valeurs;
 
-// Variable auxiliaire pour dÈfinir le max
-dvar int freq_max;
+// Objectif
+//minimize freq_max;
 
 // Contraintes
 constraints {
+ 
 	// Toutes les frequences sont differentes
    	// allDifferent(all (i in emetteurs) freq[i]);
    	
@@ -55,17 +55,21 @@ constraints {
  	forall (o in offsets){
  	  abs(freq[o.emett1] - freq[o.emett2]) >= o.value;
  	}
- 	
- 	// Contraintes de paritÈ
- 	forall (i in emetteurs_pairs){
- 	  freq[i] == 2 * semi_freq[i];
- 	}
- 	forall (i in emetteurs_impairs){
- 	  freq[i] == 2 * semi_freq[i] + 1;
- 	}
- 	
- 	
-}; 
+
+//	 Contraintes de parit√© 1
+	forall (i in emetteurs){
+	  i mod 2 == (freq[i]) mod 2;
+	}
+
+ 	// Contraintes de parit√© 2
+// 	forall (i in emetteurs_pairs){
+// 	  freq[i] == 2 * semi_freq[i];
+// 	}
+// 	forall (i in emetteurs_impairs){
+// 	  freq[i] == 2 * semi_freq[i] - 1;
+// 	}
+// 	
+};
 
 // Main block
  main {
