@@ -18,6 +18,8 @@
 			</ref>
 			<ref name="mini-projet-1.dat" type="data">
 			</ref>
+			<ref name="param.ops" type="setting">
+			</ref>
 		</config>
 	</configs>
 	

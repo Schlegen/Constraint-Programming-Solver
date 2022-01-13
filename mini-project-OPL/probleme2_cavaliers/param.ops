@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<settings version="2">
+  <category name="cplex">
+    <setting name="advind" value="0"/>
+  </category>
+  <category name="cp">
+    <setting name="presolve" value="false"/>
+    <setting name="defaultinferencelevel" value="Extended"/>
+  </category>
+</settings>

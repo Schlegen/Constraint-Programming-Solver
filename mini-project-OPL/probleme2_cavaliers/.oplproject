@@ -6,6 +6,8 @@
 			</ref>
 			<ref name="cavaliers.dat" type="data">
 			</ref>
+			<ref name="param.ops" type="setting">
+			</ref>
 		</config>
 	</configs>
 	

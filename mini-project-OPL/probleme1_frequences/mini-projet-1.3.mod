@@ -29,7 +29,7 @@ dvar int freq_max in valeurs;
 
 // Contraintes
 
-//maximize freq_max;
+// maximize freq_max;
 
 constraints {
 	// Toutes les frequences sont differentes
